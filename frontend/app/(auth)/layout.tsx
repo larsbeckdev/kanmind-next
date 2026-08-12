@@ -13,7 +13,7 @@ export default function AuthLayout({
     <SessionGate expects="guest" redirectTo="/dashboard">
       <div className="flex min-h-dvh flex-col">
         <div className="grid flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]">
-          <section className="surface-grid relative hidden overflow-hidden border-r border-border/60 lg:flex lg:flex-col lg:justify-between lg:p-12">
+          <section className="surface-grid relative hidden overflow-hidden border-r border-border/60 lg:flex lg:flex-col lg:p-12">
             <Image
               src="/brand/login-background.svg"
               alt=""
@@ -24,7 +24,7 @@ export default function AuthLayout({
             />
             <Logo href="/login" width={128} className="relative" />
 
-            <div className="relative max-w-md">
+            <div className="relative my-auto max-w-md">
               <h1 className="font-heading text-4xl leading-tight font-bold text-primary">
                 Boards that stay
                 <br />
@@ -35,19 +35,7 @@ export default function AuthLayout({
                 reviewer per ticket and a comment thread where the discussion
                 actually belongs.
               </p>
-              <Image
-                src="/brand/shake-hands.png"
-                alt=""
-                aria-hidden
-                width={260}
-                height={160}
-                className="mt-10 h-auto opacity-90"
-              />
             </div>
-
-            <p className="relative text-xs text-muted-foreground">
-              Developer Akademie · Backend module
-            </p>
           </section>
 
           <main className="flex flex-col justify-center px-4 py-10 sm:px-10">
