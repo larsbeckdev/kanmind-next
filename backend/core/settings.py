@@ -10,25 +10,53 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def env_flag(name, default):
+    """Reads a boolean from the environment, falling back to ``default``."""
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def env_list(name, default=''):
+    """Splits a comma separated environment variable into a list."""
+    raw = os.environ.get(name, default)
+    return [item.strip() for item in raw.split(',') if item.strip()]
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
+#
+# Every setting below keeps its development default when the matching
+# environment variable is unset, so the local workflow from the README is
+# unchanged. The Docker Compose stack overrides them.
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
     'django-insecure-2b*i&jem@r7^ornepohjry#ay3pnc4+20+_3@a+sw-27gstmm)')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_flag('DJANGO_DEBUG', True)
 
 # Development setup: the server is meant to be reachable from other devices
 # in the local network. Restrict this to real host names before deploying.
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', '*')
+
+# Behind a reverse proxy Django only sees plain HTTP. Both settings are
+# needed once the proxy terminates TLS, otherwise the admin login rejects
+# its own POST as a CSRF failure.
+CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS')
+
+if env_flag('DJANGO_TRUST_PROXY_SSL_HEADER', False):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -83,10 +111,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+# The container keeps the database file on a volume, so DJANGO_DB_PATH
+# points outside the image and survives a rebuild.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('DJANGO_DB_PATH', BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -120,6 +150,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# With DEBUG off Django stops serving static files itself. collectstatic
+# writes them here and the reverse proxy serves the directory, which keeps
+# the admin styled without an extra dependency.
+STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT', BASE_DIR / 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
