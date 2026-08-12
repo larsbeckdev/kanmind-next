@@ -1,0 +1,135 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: var(--font-sans);
+    --font-sans: var(--font-mulish);
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --color-surface-sunken: var(--surface-sunken);
+    --color-brand: var(--brand);
+    --color-brand-soft: var(--brand-soft);
+    --color-priority-high: var(--priority-high);
+    --color-priority-medium: var(--priority-medium);
+    --color-priority-low: var(--priority-low);
+    --color-status-to-do: var(--status-to-do);
+    --color-status-in-progress: var(--status-in-progress);
+    --color-status-review: var(--status-review);
+    --color-status-done: var(--status-done);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* KanMind is a dark-only brand. The same token set is declared on :root and
+   on .dark so that the `dark:` variants baked into the shadcn components
+   resolve, no matter how the theme class ends up on <html>. */
+:root,
+.dark {
+    --background: oklch(0.2714 0.0371 260.01); /* #1C2739 */
+    --foreground: oklch(0.9461 0 89.88); /* #EDEDED */
+    --surface-sunken: oklch(0.2427 0.0294 261.37); /* #18202E */
+    --card: oklch(0.3084 0.0497 260.27); /* #213049 */
+    --card-foreground: oklch(0.9461 0 89.88);
+    --popover: oklch(0.3084 0.0497 260.27);
+    --popover-foreground: oklch(0.9461 0 89.88);
+    --primary: oklch(0.8652 0.1768 90.38); /* #FFCC00 */
+    --primary-foreground: oklch(0.2714 0.0371 260.01);
+    --secondary: oklch(0.3084 0.0497 260.27);
+    --secondary-foreground: oklch(0.9461 0 89.88);
+    --muted: oklch(0.2427 0.0294 261.37);
+    --muted-foreground: oklch(0.7 0.0333 260);
+    --accent: oklch(0.4017 0.0762 259.88); /* #2F4871 */
+    --accent-foreground: oklch(0.9461 0 89.88);
+    --destructive: oklch(0.6281 0.2575 29.01); /* #FF0004 */
+    --border: oklch(0.4017 0.0762 259.88);
+    --input: oklch(0.4017 0.0762 259.88);
+    --ring: oklch(0.9276 0.1193 95.72); /* #FFE787 */
+    --brand: oklch(0.8652 0.1768 90.38);
+    --brand-soft: oklch(0.9276 0.1193 95.72);
+    --priority-high: oklch(0.6281 0.2575 29.01);
+    --priority-medium: oklch(0.6667 0.2243 36.78); /* #FF4C00 */
+    --priority-low: oklch(0.5807 0.2305 259.47); /* #006FFF */
+    --status-to-do: oklch(0.7 0.0333 260);
+    --status-in-progress: oklch(0.5807 0.2305 259.47);
+    --status-review: oklch(0.6667 0.2243 36.78);
+    --status-done: oklch(0.7193 0.1843 153.23);
+    --chart-1: oklch(0.8652 0.1768 90.38);
+    --chart-2: oklch(0.5807 0.2305 259.47);
+    --chart-3: oklch(0.6667 0.2243 36.78);
+    --chart-4: oklch(0.7193 0.1843 153.23);
+    --chart-5: oklch(0.9276 0.1193 95.72);
+    --radius: 0.5rem;
+    --sidebar: oklch(0.2427 0.0294 261.37);
+    --sidebar-foreground: oklch(0.9461 0 89.88);
+    --sidebar-primary: oklch(0.8652 0.1768 90.38);
+    --sidebar-primary-foreground: oklch(0.2714 0.0371 260.01);
+    --sidebar-accent: oklch(0.3084 0.0497 260.27);
+    --sidebar-accent-foreground: oklch(0.9461 0 89.88);
+    --sidebar-border: oklch(0.4017 0.0762 259.88);
+    --sidebar-ring: oklch(0.9276 0.1193 95.72);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+  html {
+    @apply font-sans;
+    }
+}
+
+@layer components {
+  .surface-grid {
+    background-image:
+      radial-gradient(
+        circle at 15% -10%,
+        color-mix(in oklch, var(--brand) 12%, transparent),
+        transparent 45%
+      ),
+      radial-gradient(
+        circle at 85% 0%,
+        color-mix(in oklch, var(--priority-low) 14%, transparent),
+        transparent 40%
+      );
+  }
+}
