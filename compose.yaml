@@ -1,0 +1,52 @@
+services:
+  api:
+    build: ./backend
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?set DJANGO_SECRET_KEY to a random string}
+      DJANGO_DEBUG: "0"
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-*}
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-}
+      DJANGO_TRUST_PROXY_SSL_HEADER: "1"
+      DJANGO_DB_PATH: /data/db.sqlite3
+      DJANGO_STATIC_ROOT: /srv/static
+    volumes:
+      - db-data:/data
+      - static-files:/srv/static
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        # Relative on purpose: the proxy puts the API on the same origin.
+        NEXT_PUBLIC_API_BASE_URL: /api
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "443:443"
+    environment:
+      # ":80" serves plain HTTP on any host name. Set it to a domain
+      # (SITE_ADDRESS=demo.example.com) and Caddy fetches a certificate.
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - static-files:/srv/static:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - api
+      - web
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  static-files:
+  caddy-data:
+  caddy-config:
