@@ -80,6 +80,10 @@ AUTH_USER_MODEL = 'auth_app.User'
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    # Serves everything collectstatic wrote to STATIC_ROOT. Django itself
+    # stops doing that once DEBUG is off, which would leave the admin
+    # without its stylesheets.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -151,10 +155,19 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# With DEBUG off Django stops serving static files itself. collectstatic
-# writes them here and the reverse proxy serves the directory, which keeps
-# the admin styled without an extra dependency.
 STATIC_ROOT = os.environ.get('DJANGO_STATIC_ROOT', BASE_DIR / 'staticfiles')
+
+# Plain compression without a hashed manifest: the manifest storage would
+# require collectstatic to have run before any template renders a static
+# file, which breaks the test suite and local runs.
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

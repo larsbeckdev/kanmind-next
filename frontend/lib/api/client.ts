@@ -2,14 +2,15 @@ import { z } from "zod"
 
 import { clearSession, getAuthToken } from "@/lib/auth/session"
 
-const DEFAULT_API_PORT = "8000"
+const DEFAULT_API_PORT = process.env.NEXT_PUBLIC_API_PORT || "8000"
 const FALLBACK_API_BASE_URL = `http://127.0.0.1:${DEFAULT_API_PORT}/api`
 
 /**
  * NEXT_PUBLIC_API_BASE_URL wins when it is configured. Without it the API is
- * assumed to run on port 8000 of the same host the page was loaded from, so
- * opening the app through the LAN address does not send the browser to its
- * own loopback interface.
+ * assumed to run on NEXT_PUBLIC_API_PORT (8000 in development) of the same
+ * host the page was loaded from, so opening the app through the LAN address
+ * or a server address does not send the browser to its own loopback
+ * interface. Both values are inlined at build time.
  */
 export function apiBaseUrl(): string {
   const configured = process.env.NEXT_PUBLIC_API_BASE_URL

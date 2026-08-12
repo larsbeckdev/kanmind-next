@@ -9,9 +9,12 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # NEXT_PUBLIC_* values are inlined into the client bundle at build time, not
-# read at runtime. The default keeps the image host independent: the browser
-# resolves /api against whatever host served the page.
-ARG NEXT_PUBLIC_API_BASE_URL=/api
+# read at runtime. Only the port is baked in, not a host name: the browser
+# builds the API URL from the address it opened the page with, so the same
+# image runs on localhost, a LAN address or the demo server.
+ARG NEXT_PUBLIC_API_PORT=8000
+ARG NEXT_PUBLIC_API_BASE_URL=
+ENV NEXT_PUBLIC_API_PORT=$NEXT_PUBLIC_API_PORT
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
