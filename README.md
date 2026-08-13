@@ -37,6 +37,7 @@ All of it lives in `.env`, see [.env.example](.env.example) for the full list wi
 | `API_PORT` | `3070` | Host port of the API. Also compiled into the frontend bundle, so changing it requires `docker compose up --build`, not just a restart. |
 | `WEB_PORT` | `3071` | Host port of the frontend. |
 | `DJANGO_ALLOWED_HOSTS` | `*` | Comma separated. Narrow this once the host name is fixed. |
+| `DJANGO_CORS_ALLOWED_ORIGINS` | empty | Comma separated origins the frontend runs on, scheme and host only. Empty allows every origin. |
 | `NEXT_PUBLIC_API_BASE_URL` | empty | Only for setups where the API is not on `<same host>:<API_PORT>`, e.g. behind a domain: `https://api.example.com/api`. |
 
 `DJANGO_DEBUG` defaults to `0` in the stack. Without any environment variables the settings keep their development defaults, so the local workflow in `backend/README.md` is unaffected.
@@ -73,6 +74,8 @@ NEXT_PUBLIC_API_BASE_URL=https://demo.example.com/api
 
 Without the first two the admin login rejects its own POST as a CSRF failure.
 
-### Still open for a public deployment
+The frontend calls the API cross-origin, so CORS is required in any case. Without `DJANGO_CORS_ALLOWED_ORIGINS` every origin is accepted, which is fine in the local network and too wide for a public deployment:
 
-`CORS_ALLOW_ALL_ORIGINS = True` in `backend/core/settings.py` — the frontend calls the API cross-origin, so CORS is required here, but the list can be narrowed to the real frontend origin.
+```bash
+DJANGO_CORS_ALLOWED_ORIGINS=https://demo.example.com
+```

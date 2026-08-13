@@ -187,10 +187,13 @@ REST_FRAMEWORK = {
 
 # Cross-Origin Resource Sharing
 # The frontend is served from a separate origin and needs explicit access.
-# Every origin is allowed because the frontend may be opened from any host
-# in the local network. Replace this with CORS_ALLOWED_ORIGINS in production.
+# Without the variable every origin is allowed, because in development the
+# frontend may be opened from any host in the local network. Listing the real
+# frontend origins narrows it down to those.
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = env_list('DJANGO_CORS_ALLOWED_ORIGINS')
+
+CORS_ALLOW_ALL_ORIGINS = not CORS_ALLOWED_ORIGINS
 
 CORS_ALLOW_CREDENTIALS = True
 
